@@ -1,6 +1,8 @@
 import pytest
-from evodm.dpsolve import dp_env, backwards_induction
+
 from evodm import define_mira_landscapes
+from evodm.dpsolve import backwards_induction, dp_env
+
 
 @pytest.fixture
 def env():

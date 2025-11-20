@@ -7,17 +7,17 @@ from collections import deque
 from copy import deepcopy
 
 import numpy as np
-from keras.layers import Dense, Dropout, Conv1D, MaxPooling1D, Flatten
-from keras.models import Sequential, Model
+import pandas as pd
+from keras.layers import Conv1D, Dense, Dropout, Flatten, MaxPooling1D
+from keras.models import Model, Sequential
 from keras.optimizers import Adam
 from keras.regularizers import L2
 from keras.utils import to_categorical
 from tqdm import tqdm
 
 from evodm.dpsolve import backwards_induction, dp_env
-from evodm.evol_game import evol_env, evol_env_wf, define_mira_landscapes
+from evodm.evol_game import define_mira_landscapes, evol_env, evol_env_wf
 from evodm.landscapes import Seascape
-import pandas as pd
 
 
 def unpack(model_config, weights, compile_config=None):

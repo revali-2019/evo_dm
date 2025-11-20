@@ -7,15 +7,19 @@ import pandas as pd
 import torch
 from matplotlib import pyplot as plt
 from tianshou.data import Batch
-from tianshou.policy import PPOPolicy, BasePolicy, DQNPolicy
+from tianshou.policy import BasePolicy, DQNPolicy
 
-from evodm.dpsolve import dp_env, backwards_induction, value_iteration, policy_iteration
-from evodm.evol_game import define_mira_landscapes, evol_env, WrightFisherEnv, SSWMEnv
+from evodm.dpsolve import backwards_induction, dp_env, policy_iteration, value_iteration
+from evodm.evol_game import SSWMEnv, WrightFisherEnv, define_mira_landscapes, evol_env
 from evodm.exp import evol_deepmind
-from evodm.hyperparameters import Presets
-from evodm.hyperparameters import hyperparameters
+from evodm.hyperparameters import Presets, hyperparameters
 from evodm.landscapes import Seascape, SeascapeUtils
-from evodm.tianshou_learner import load_best_policy, load_random_policy, train_wf_landscapes, train_sswm_landscapes
+from evodm.tianshou_learner import (
+    load_best_policy,
+    load_random_policy,
+    train_sswm_landscapes,
+    train_wf_landscapes,
+)
 
 # Set up logging
 timestamp = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")

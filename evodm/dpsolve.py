@@ -1,7 +1,9 @@
+import numpy as np
+from mdptoolbox.mdp import FiniteHorizon, PolicyIteration, ValueIteration
+
 from evodm.evol_game import *
 from evodm.landscapes import Landscape
-from mdptoolbox.mdp import FiniteHorizon, ValueIteration, PolicyIteration
-import numpy as np
+
 
 class dp_env:
     """

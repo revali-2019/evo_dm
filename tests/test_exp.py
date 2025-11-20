@@ -1,5 +1,7 @@
-from evodm.exp import mdp_mira_sweep, evol_deepmind
 from itertools import chain
+
+from evodm.exp import evol_deepmind, mdp_mira_sweep
+
 
 def test_mdp_mira_sweep():
     mem_list = mdp_mira_sweep(num_evals = 10)[0]

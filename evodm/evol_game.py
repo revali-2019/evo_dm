@@ -1,16 +1,15 @@
+import copy
+import itertools
+import math
+import random
+
+import gymnasium as gym
+import numpy as np
 from gymnasium import spaces
+from tensorflow.keras.utils import to_categorical
 from tianshou.env import DummyVectorEnv
 
 from .landscapes import Landscape, Seascape
-import numpy as np
-from tensorflow.keras.utils import to_categorical
-import math
-import random
-import itertools
-import copy
-import gymnasium as gym
-from evodm.theoretical_model_compute import define_basic_landscapes
-
 
 # Functions to convert data describing bacterial evolution sim into a format
 # that can be used by the learner

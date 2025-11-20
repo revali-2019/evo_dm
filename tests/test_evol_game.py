@@ -1,13 +1,14 @@
-from evodm import hyperparameters
-from evodm import evol_env, generate_landscapes, normalize_landscapes, run_sim
-from evodm.evol_game import discretize_state, define_mira_landscapes, evol_env_wf
-from evodm.data import define_dag_seascapes
-from evodm.examples.mira_mdp import run_sim_tianshou
-import pytest
-import numpy.testing as npt
-import numpy as np
-import pandas as pd
 import random
+
+import numpy as np
+import numpy.testing as npt
+import pandas as pd
+import pytest
+
+from evodm import evol_env, generate_landscapes, hyperparameters, normalize_landscapes, run_sim
+from evodm.data import define_dag_seascapes
+from evodm.evol_game import define_mira_landscapes, discretize_state, evol_env_wf
+
 
 #start testing that the environment class is working as expected
 @pytest.fixture

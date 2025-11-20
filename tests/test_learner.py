@@ -1,12 +1,15 @@
-from evodm.learner import compute_optimal_policy, compute_optimal_action, DrugSelector, practice
-from evodm.hyperparameters import hyperparameters
-from evodm.dpsolve import backwards_induction, dp_env
-from evodm.exp import define_mira_landscapes
 import random
+from itertools import chain
+
 import numpy as np
 import pytest
-from itertools import chain
-from copy import deepcopy
+
+from evodm.dpsolve import dp_env
+from evodm.exp import define_mira_landscapes
+from evodm.hyperparameters import hyperparameters
+from evodm.learner import DrugSelector, compute_optimal_action, compute_optimal_policy, practice
+
+
 #define fixtures to use for testing functions - lots of these will depend on each other
 @pytest.fixture
 def hp():

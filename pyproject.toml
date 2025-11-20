@@ -34,12 +34,16 @@ dependencies = [
     "pandas",
     "matplotlib",
     "ruptures",
+    "torch>=2.8.0",
+    "tianshou>=0.5.1",
+    "scikit-learn>=1.6.1",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.4.1",
     "pytest-cov",
+    "ruff>=0.1.0",
 ]
 
 [project.urls]
@@ -64,20 +68,21 @@ addopts = [
     "--verbose",
 ]
 
-[tool.black]
-line-length = 100
-target-version = ['py39', 'py310', 'py311']
-include = '\.pyi?$'
-
-[tool.isort]
-profile = "black"
-line_length = 100
-known_first_party = ["evodm"]
-
 [tool.mypy]
 python_version = "3.9"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
 packages = ["evodm"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["I"]  # Import sorting
+ignore = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["evodm"]
 

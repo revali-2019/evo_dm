@@ -1,9 +1,10 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import scipy
-import ruptures as rpt
 import os
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import ruptures as rpt
+import scipy
 
 data_path = 'drug_free_growth.xlsx'
 save_folder = 'test' # place to save figures for spot-checking

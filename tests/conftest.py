@@ -1,7 +1,6 @@
 """
 Pytest configuration and shared fixtures for evodm tests.
 """
-import pytest
 import sys
 from pathlib import Path
 

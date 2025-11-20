@@ -5,15 +5,15 @@ import torch
 from keras.optimizers import Adam
 from tianshou.data import Collector, VectorReplayBuffer
 from tianshou.env import DummyVectorEnv
-from tianshou.policy import PPOPolicy, BasePolicy, DQNPolicy
-from tianshou.trainer import OnpolicyTrainer, OffpolicyTrainer
+from tianshou.policy import BasePolicy, DQNPolicy, PPOPolicy
+from tianshou.trainer import OffpolicyTrainer, OnpolicyTrainer
 from tianshou.utils import TensorboardLogger
 from tianshou.utils.net.common import Net
 from tianshou.utils.net.discrete import Actor, Critic
 from torch.optim import Adam
 from torch.utils.tensorboard import SummaryWriter
 
-from evodm.evol_game import WrightFisherEnv, SSWMEnv
+from evodm.evol_game import SSWMEnv, WrightFisherEnv
 from evodm.hyperparameters import Presets as P
 
 # Logger for tensorboard

@@ -1,7 +1,8 @@
-import pytest
-from evodm.tianshou_learner import *
+
 from evodm.evol_game import WrightFisherEnv
-from evodm.hyperparameters import hyperparameters, Presets
+from evodm.hyperparameters import Presets
+from evodm.tianshou_learner import *
+
 
 def test_load_file():
     p = Presets.p1_test()

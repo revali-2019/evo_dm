@@ -1,8 +1,11 @@
 import numpy as np
 import pytest
 
-from evodm.theoretical_model_compute import compute_stationary_dist, get_transition_matrices_sswm, define_mira_landscapes
-
+from evodm.theoretical_model_compute import (
+    compute_stationary_dist,
+    define_mira_landscapes,
+    get_transition_matrices_sswm,
+)
 
 
 @pytest.mark.parametrize("policy_matrix, fitness_matrix, expected", [

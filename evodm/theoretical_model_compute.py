@@ -1,11 +1,8 @@
-import numpy as np
-import torch
-from scipy.optimize import minimize
 import warnings
-import pandas as pd
-import sklearn
-import torch.optim as optim
 
+import numpy as np
+import pandas as pd
+from scipy.optimize import minimize
 
 warnings.filterwarnings('ignore')
 
@@ -646,7 +643,6 @@ def solve_pareto_frontier(fitness_landscape, plot_results=True, plot_random = Tr
 
 def check_smooth_curve(mutual_info : np.ndarray | list, mean_fitness : np.ndarray | list):
     from numpy.polynomial.polynomial import Polynomial as P
-    import matplotlib.pyplot as plt
 
     fit, results = P.fit(mutual_info, mean_fitness, deg=8, full=True)
 

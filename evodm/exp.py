@@ -1,13 +1,14 @@
-from evodm.learner import *
+import pickle
+from itertools import combinations
+
+import numpy as np
+import pandas as pd
+
+from evodm.est_growth_rates import *
 from evodm.evol_game import define_mira_landscapes
 from evodm.hyperparameters import hyperparameters
+from evodm.learner import *
 
-from evodm.landscapes import Landscape
-import pandas as pd
-import numpy as np
-from itertools import combinations
-from evodm.est_growth_rates import * 
-import pickle
 
 def evol_deepmind(savepath = None, num_evols = 1, N = 5, episodes = 50,
                   reset_every = 20, min_epsilon = 0.005, 

@@ -1,8 +1,10 @@
-from evodm.landscapes import Landscape
-from evodm.evol_game import evol_env_wf, generate_landscapes, normalize_landscapes
-from evodm.data import get_example_drug
-import pandas as pd
 import numpy as np
+import pandas as pd
+
+from evodm.data import get_example_drug
+from evodm.evol_game import evol_env_wf, generate_landscapes, normalize_landscapes
+from evodm.landscapes import Landscape
+
 
 def num_peaks(N, sigma, n, num_jumps):
     """
