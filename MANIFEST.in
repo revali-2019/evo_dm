@@ -1,0 +1,7 @@
+include README.md
+include LICENSE.md
+include requirements.txt
+include pyproject.toml
+recursive-include evodm *.py
+recursive-include evodm/examples *.py
+
