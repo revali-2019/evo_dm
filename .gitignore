@@ -149,3 +149,15 @@ prof_practice.stats
 test_pickle
 testsave
 evodm.egg-info/**
+
+# Data and results (uncomment if you want to ignore these)
+# data/raw/*
+# data/processed/*
+# results/*
+# !data/.gitkeep
+# !data/raw/.gitkeep
+# !data/processed/.gitkeep
+# !results/.gitkeep
+
+# Notebooks checkpoints
+notebooks/.ipynb_checkpoints/
