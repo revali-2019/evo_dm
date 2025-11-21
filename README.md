@@ -14,6 +14,13 @@
 ## Table of Contents
 
 - [Features](#features)
+- [Architecture Overview](#architecture-overview)
+  - [Landscape vs Seascape](#landscape-vs-seascape)
+  - [System Architecture Flow](#system-architecture-flow)
+  - [Landscape Generation Process](#landscape-generation-process)
+  - [Seascape Generation Process](#seascape-generation-process)
+  - [MDP/RL Environment Setup](#mdprl-environment-setup)
+  - [Key Concepts](#key-concepts)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
 - [Development Workflow](#development-workflow)
@@ -31,6 +38,170 @@
 - **Landscape utilities**: generation, normalization, selectivity estimation, and visualization helpers
 - **Experiment harnesses**: reproducible sweeps, Mira benchmarks, seascape simulations, and logging utilities
 - **Research-friendly tooling**: notebooks, scripts, and data directories scaffolded for typical ML experimentation
+
+## Architecture Overview
+
+### Landscape vs Seascape
+
+**Landscape** represents a static fitness landscape where each genotype (bit sequence of length N) has a single fitness value. This models drug effects at a fixed concentration.
+
+**Seascape** extends Landscape to model dose-dependent effects, where fitness varies with drug concentration. This enables more realistic modeling of drug resistance and concentration-dependent selection.
+
+```mermaid
+graph TB
+    subgraph "Landscape Structure"
+        L[Landscape<br/>N genotypes, σ epistasis]
+        L --> |"2^N genotypes"| G[Genotype 0000<br/>Genotype 0001<br/>...<br/>Genotype 1111]
+        G --> |"Single fitness value"| F[Fitness Array<br/>ls: [f₀, f₁, ..., f₂ᴺ⁻¹]]
+        F --> |"get_TM()"| TM[Transition Matrix<br/>2^N × 2^N<br/>Mutation probabilities]
+    end
+    
+    subgraph "Seascape Structure"
+        S[Seascape<br/>extends Landscape]
+        S --> |"Multiple concentrations"| C[Concentrations<br/>[0.1, 0.05, ..., 0.0] M]
+        C --> |"For each conc"| SS[Seascape Matrix<br/>ss: [conc × 2^N]<br/>Fitness per genotype per conc]
+        SS --> |"get_TM(conc)"| TM2[Transition Matrix<br/>per concentration]
+        S -.->|"Inherits from"| L
+    end
+```
+
+### System Architecture Flow
+
+```mermaid
+flowchart TD
+    START[Start: Define Parameters<br/>N, σ, num_drugs] --> GEN{Generate or<br/>Load Landscapes?}
+    
+    GEN -->|Generate| GL[generate_landscapes<br/>Creates correlated landscapes]
+    GEN -->|Load| LD[Load from file<br/>e.g., Mira landscapes]
+    
+    GL --> NORM[normalize_landscapes<br/>Scale fitness values]
+    LD --> NORM
+    
+    NORM --> MODE{Use Seascapes?}
+    
+    MODE -->|Yes| SEAS[Create Seascape objects<br/>Fitness × Concentrations]
+    MODE -->|No| LAND[Create Landscape objects<br/>Single fitness per genotype]
+    
+    SEAS --> TM_SEAS[Compute Transition Matrices<br/>per concentration]
+    LAND --> TM_LAND[Compute Transition Matrices<br/>Single matrix per drug]
+    
+    TM_SEAS --> ENV[evol_env or dp_env<br/>RL Environment]
+    TM_LAND --> ENV
+    
+    ENV --> SOLVER{Solution Method}
+    
+    SOLVER -->|Classical| DP[Dynamic Programming<br/>Policy Iteration<br/>Value Iteration]
+    SOLVER -->|Deep RL| RL[Tianshou/Tiankou<br/>DQN, PPO, etc.]
+    
+    DP --> POLICY[Optimal Policy<br/>Drug selection strategy]
+    RL --> POLICY
+    
+    POLICY --> EVAL[Evaluate Policy<br/>Run simulations<br/>Compute fitness]
+    
+    style START fill:#e1f5ff
+    style POLICY fill:#c8e6c9
+    style EVAL fill:#fff9c4
+```
+
+### Landscape Generation Process
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Generator
+    participant Landscape
+    participant TransitionMatrix
+    
+    User->>Generator: generate_landscapes(N, σ, correl)
+    Generator->>Generator: Create additive base landscape
+    Generator->>Generator: Add Gaussian noise (σ)
+    Generator->>Generator: Generate correlated landscapes (Bs)
+    Generator->>Landscape: Initialize Landscape objects
+    Landscape->>Landscape: Store fitness array (ls)
+    User->>Landscape: get_TM()
+    Landscape->>TransitionMatrix: Compute mutation probabilities
+    TransitionMatrix->>Landscape: Return 2^N × 2^N matrix
+    Landscape->>User: Transition Matrix ready
+```
+
+### Seascape Generation Process
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Seascape
+    participant HillEquation
+    participant TransitionMatrix
+    
+    User->>Seascape: Seascape(N, σ, concentrations, ic50s)
+    Seascape->>Seascape: Generate IC50s per genotype
+    Seascape->>HillEquation: Apply Hill equation for each conc
+    HillEquation->>Seascape: Fitness = f(IC50, concentration)
+    Seascape->>Seascape: Build seascape matrix [conc × 2^N]
+    User->>Seascape: get_TM(concentration)
+    Seascape->>TransitionMatrix: Compute transitions at conc
+    TransitionMatrix->>Seascape: Return matrix for concentration
+    Seascape->>User: Transition Matrix ready
+```
+
+### MDP/RL Environment Setup
+
+```mermaid
+graph LR
+    subgraph "Input"
+        L1[Landscape 1<br/>Drug A]
+        L2[Landscape 2<br/>Drug B]
+        L3[Landscape N<br/>Drug N]
+    end
+    
+    subgraph "Transition Matrices"
+        TM1[TM₁: 2^N × 2^N]
+        TM2[TM₂: 2^N × 2^N]
+        TMN[TMₙ: 2^N × 2^N]
+    end
+    
+    subgraph "MDP Environment"
+        STATES[States: 2^N genotypes<br/>s ∈ {0, 1, ..., 2^N-1}]
+        ACTIONS[Actions: N drugs<br/>a ∈ {0, 1, ..., N-1}]
+        TRANS[Transitions: P[s'|s,a]<br/>From TM matrices]
+        REWARDS[Rewards: R(s,a,s')<br/>1 - fitness(s')]
+    end
+    
+    subgraph "Policy Learning"
+        DP[DP Solvers<br/>Policy/Value Iteration]
+        RL[Deep RL<br/>Tianshou Agents]
+    end
+    
+    L1 --> TM1
+    L2 --> TM2
+    L3 --> TMN
+    
+    TM1 --> TRANS
+    TM2 --> TRANS
+    TMN --> TRANS
+    
+    STATES --> TRANS
+    ACTIONS --> TRANS
+    TRANS --> REWARDS
+    
+    REWARDS --> DP
+    REWARDS --> RL
+    
+    DP --> POLICY[Optimal Policy<br/>π*: S → A]
+    RL --> POLICY
+```
+
+### Key Concepts
+
+**Genotype Space**: For N bits, there are 2^N possible genotypes (e.g., N=4 → 16 genotypes: 0000, 0001, ..., 1111)
+
+**Fitness Landscape**: Maps each genotype to a fitness value. Higher fitness = better survival/reproduction under selection.
+
+**Transition Matrix (TM)**: 2^N × 2^N matrix where TM[i,j] = probability of mutating from genotype i to j in one step.
+
+**Epistasis (σ)**: Controls landscape ruggedness. σ=0 → smooth (additive), σ>0 → rugged (epistatic interactions).
+
+**Seascape**: Extends landscape to model concentration-dependent fitness, enabling dose-response modeling.
 
 ## Project Structure
 
